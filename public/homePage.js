@@ -10,14 +10,14 @@ getStocksDec();
 
 logoutButton.action = () => ApiConnector.logout(response => {
     if(!response.success){
-        throw new Error('Ошибка при выходе');
+        throw new Error(response.error);
     }
     location.reload();
 });
 
 ApiConnector.current(response => {
     if(!response.success){
-        throw new Error('Ошибка получения данных пользователя');
+        throw new Error(response.error);
     }
     ProfileWidget.showProfile(response.data);
 });
@@ -25,7 +25,7 @@ ApiConnector.current(response => {
 function getStocksDec(){
     ApiConnector.getStocks(response => {
         if(!response.success){
-            throw new Error('Ошибка получения текущих курсов валют');
+            throw new Error(response.error);
         }
         ratesBoard.clearTable();
         ratesBoard.fillTable(response.data);
@@ -35,8 +35,8 @@ function getStocksDec(){
 
 moneyManager.addMoneyCallback = (data) => ApiConnector.addMoney(data,response => {
     if(!response.success){
-        moneyManager.setMessage(false, 'Ошибка пополнения баланса. Заполните поля');
-        throw new Error('Ошибка пополнения баланса');
+        moneyManager.setMessage(false, response.error);
+        throw new Error(response.error);
     }
     ProfileWidget.showProfile(response.data);
     moneyManager.setMessage(true, 'Счет пополнен');
@@ -44,7 +44,7 @@ moneyManager.addMoneyCallback = (data) => ApiConnector.addMoney(data,response =>
 
 moneyManager.conversionMoneyCallback = (data) => ApiConnector.convertMoney(data, response => {
     if(!response.success){
-        moneyManager.setMessage(false, 'Ошибка конвертации валюты. Заполните поля');
+        moneyManager.setMessage(false, response.error);
         throw new Error();
     }
     ProfileWidget.showProfile(response.data);
@@ -54,7 +54,7 @@ moneyManager.conversionMoneyCallback = (data) => ApiConnector.convertMoney(data,
 moneyManager.sendMoneyCallback = (data) => ApiConnector.transferMoney(data, response => {
     console.log(data, response)
     if(!response.success){
-        moneyManager.setMessage(false, 'Ошибка конвертации валюты. Заполните поля');
+        moneyManager.setMessage(false, response.error);
         throw new Error();
     }
     ProfileWidget.showProfile(response.data);
@@ -72,7 +72,7 @@ ApiConnector.getFavorites( response => {
 
 favoritesWidget.addUserCallback = (data) => ApiConnector.addUserToFavorites(data, response => {
     if (!response.success){
-        favoritesWidget.setMessage(false, 'Ошибка добавления пользователя')
+        favoritesWidget.setMessage(false, response.error)
         throw new Error;
     }
     favoritesWidget.clearTable();
@@ -84,7 +84,7 @@ favoritesWidget.addUserCallback = (data) => ApiConnector.addUserToFavorites(data
 
 favoritesWidget.removeUserCallback = (data) => ApiConnector.removeUserFromFavorites(data, response => {
     if (!response.success){
-        favoritesWidget.setMessage(false, 'Ошибка удаления пользователя');
+        favoritesWidget.setMessage(false, response.error);
         throw new Error;
     }
     favoritesWidget.clearTable();
